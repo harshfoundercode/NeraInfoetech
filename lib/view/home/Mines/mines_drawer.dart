@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nera/main.dart';
-import 'package:nera/res/components/custom_switch.dart';
 import 'package:nera/view/home/Mines/bet_history.dart';
+import 'package:nera/view/home/mini/Aviator/widget/switch.dart';
+
 
 class MinesDrawer extends StatefulWidget {
   const MinesDrawer({super.key});
@@ -12,7 +13,7 @@ class MinesDrawer extends StatefulWidget {
 
 class _MinesDrawerState extends State<MinesDrawer> {
 
-    bool autoCas = false;
+  bool autoCas = false;
 
 
   @override
@@ -113,7 +114,7 @@ class _MinesDrawerState extends State<MinesDrawer> {
                                         return MineGameHistory();
                                       },
                                     );
-                                   // Navigator.pop(context);
+                                    // Navigator.pop(context);
                                   },
                                   child: Row(
                                     children: [

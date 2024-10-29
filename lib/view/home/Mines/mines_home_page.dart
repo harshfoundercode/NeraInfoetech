@@ -3,8 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nera/view/home/Mines/mines_drawer.dart';
-import 'package:provider/provider.dart';
 import 'package:nera/generated/assets.dart';
 import 'package:nera/main.dart';
 import 'package:nera/model/user_model.dart';
@@ -14,10 +12,14 @@ import 'package:nera/res/components/app_btn.dart';
 import 'package:nera/res/components/text_widget.dart';
 import 'package:nera/res/provider/profile_provider.dart';
 import 'package:nera/res/provider/user_view_provider.dart';
-import 'package:http/http.dart'as http;
+import 'package:nera/view/home/Mines/mines_drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
 
 class MinesHomePage extends StatefulWidget {
-  const MinesHomePage({super.key});
+  final String gameId;
+  const MinesHomePage({super.key, required this.gameId});
 
   @override
   State<MinesHomePage> createState() => _MinesHomePageState();
@@ -43,6 +45,7 @@ class _MinesHomePageState extends State<MinesHomePage> {
     });
   }
 
+  @override
   void dispose() {
     amount.dispose();
     super.dispose();
@@ -59,12 +62,12 @@ class _MinesHomePageState extends State<MinesHomePage> {
     5000,
   ];
   int dropdownMines = 3;
-  bool cashOut =false;
+  bool cashOut = false;
   String displayedValue = '1.10';
   void _onChanged(int? newValue) {
     setState(() {
       dropdownMines = newValue!;
-      _refreshGame();
+      refreshGame();
       if (dropdownMines == 1) {
         displayedValue = "1.01";
       } else if (dropdownMines == 2) {
@@ -107,9 +110,8 @@ class _MinesHomePageState extends State<MinesHomePage> {
         displayedValue = "2.10";
       }
     });
-    print(displayedValue);
-    print("displayedValue");
   }
+
   int rows = 5;
   int columns = 5;
 
@@ -117,7 +119,7 @@ class _MinesHomePageState extends State<MinesHomePage> {
   List<bool> selectedCells = [];
   bool isTapped = false;
   bool gameLost = false;
-  double amountVale= 0.0;
+  double amountVale = 0.0;
 
   @override
   void initState() {
@@ -141,11 +143,11 @@ class _MinesHomePageState extends State<MinesHomePage> {
     }
   }
 
-  void _refreshGame() {
+  void refreshGame() {
     setState(() {
       _initializeGrid();
-      amountVale= 0.0;
-      selectedLength=0;
+      amountVale = 0.0;
+      selectedLength = 0;
       isTapped = false;
       gameLost = false;
     });
@@ -155,30 +157,27 @@ class _MinesHomePageState extends State<MinesHomePage> {
     setState(() {
       if (grid[index ~/ columns][index % columns]) {
         gameLost = true;
-        print('game Lost');
-        cashOut=false;
-         amountVale= 0.0;
+        cashOut = false;
+        amountVale = 0.0;
 
-        mineCashOut(amountVale.toStringAsFixed(2),displayedValue,'2');
-
-        print(amountVale);
+        mineCashOut(amountVale.toStringAsFixed(2), displayedValue, '2');
         showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (BuildContext context)
-            {
-              return  AlertDialog(
+            builder: (BuildContext context) {
+              return AlertDialog(
                 backgroundColor: Colors.transparent,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(14))),
                 content: SizedBox(
                   height: height * 0.55,
+                  width: width*0.55,
                   child: Column(
                     children: [
                       Container(
                         height: 40,
                         width: width,
-                        decoration:  BoxDecoration(
+                        decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(Assets.imagesHowtoplayheader),
                                 fit: BoxFit.fill)),
@@ -204,35 +203,34 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                 setState(() {
                                   isTapped = true;
                                   _toggleTappedCell(index);
-                                  selectedLength = selectedCells.where((cell) => cell).length;
-                                  amountVale = selectedIndex + (selectedLength * double.parse(displayedValue));
-                                  print("Selected length: $selectedLength");
-                                  print("Amount: $amountVale");
-
+                                  selectedLength = selectedCells
+                                      .where((cell) => cell)
+                                      .length;
+                                  amountVale = selectedIndex +
+                                      (selectedLength *
+                                          double.parse(displayedValue));
                                 });
                               }
                             },
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey),
-                                image:  DecorationImage(image: AssetImage(
-                                    selectedCells[index]
+                                image: DecorationImage(
+                                    image: AssetImage(selectedCells[index]
                                         ? Assets.iconsVault
                                         : isTapped && grid[row][col] && gameLost
-                                        ?Assets.mineMine
-                                        :Assets.mineMineGrid
-                                ),fit: BoxFit.fill),
-
+                                        ? Assets.mineMine
+                                        : Assets.mineMineGrid),
+                                    fit: BoxFit.fill),
                               ),
-
                             ),
                           );
                         },
                       ),
                       Container(
                         height: height * 0.085,
-                        decoration:  BoxDecoration(
-                          color: AppColors.scaffolddark,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primaryTextColor,
                           borderRadius: BorderRadius.only(
                               bottomRight: Radius.circular(10),
                               bottomLeft: Radius.circular(10)),
@@ -243,9 +241,8 @@ class _MinesHomePageState extends State<MinesHomePage> {
                               title: 'Close',
                               fontSize: 15,
                               onTap: () {
-                                _refreshGame();
+                                refreshGame();
                                 Navigator.pop(context);
-
                               },
                               hideBorder: true,
                               gradient: AppColors.buttonGradient2),
@@ -256,22 +253,21 @@ class _MinesHomePageState extends State<MinesHomePage> {
                 ),
               );
             });
-
       } else {
         selectedCells[index] = !selectedCells[index];
-        print('game go On');
       }
     });
   }
-  int selectedLength=0;
+
+  int selectedLength = 0;
   @override
   Widget build(BuildContext context) {
-    double progressValue = selectedLength / (25-dropdownMines);
+    double progressValue = selectedLength / (25 - dropdownMines);
     return Scaffold(
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration:  BoxDecoration(gradient: AppColors.minesBgColor),
+        decoration: const BoxDecoration(gradient: AppColors.minesBgColor),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -298,49 +294,61 @@ class _MinesHomePageState extends State<MinesHomePage> {
                             fontWeight: FontWeight.w900,
                             color: Colors.white),
                       ),
-                      Container(
-                        child: Row(
-                          children: [
-                             Text(
-                              context.read<ProfileProvider>().mainWallet.toStringAsFixed(2)+' INR',
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: InkWell(
-                                onTap: (){
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const MinesDrawer();
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  decoration: BoxDecoration(
-                                      color: Colors.teal,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.3),
-                                          blurRadius: 5,
-                                          spreadRadius: 2,
-                                          offset: const Offset(0,
-                                              3), // Adjust the shadow's position here
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: Colors.black)),
-                                  child: const Icon(Icons.menu,color: Colors.white,),
+                      Row(
+                        children: [
+                          Text(
+                            context
+                                .read<ProfileProvider>()
+                                .totalWallet==null?'':
+                            context
+                                .read<ProfileProvider>()
+                                .totalWallet
+                                .toStringAsFixed(2)+ " INR",
+                            // context
+                            //         .read<ProfileProvider>()
+                            //         .mainWallet
+                            //         .toStringAsFixed(2) +
+                            //     ' INR',
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return const MinesDrawer();
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                    color: Colors.teal,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        blurRadius: 5,
+                                        spreadRadius: 2,
+                                        offset: const Offset(0,
+                                            3), // Adjust the shadow's position here
+                                      ),
+                                    ],
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.black)),
+                                child: const Icon(
+                                  Icons.menu,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       )
                     ],
                   ),
@@ -378,8 +386,8 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                     ],
                                     color: const Color(0xFF015759),
                                     borderRadius: BorderRadius.circular(20),
-                                    border:
-                                        Border.all(width: 1, color: Colors.black),
+                                    border: Border.all(
+                                        width: 1, color: Colors.black),
                                   ),
                                   child: DropdownButtonHideUnderline(
                                     child: Center(
@@ -389,7 +397,8 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                         value: dropdownMines,
                                         onChanged: _onChanged,
                                         isExpanded: true,
-                                        iconSize: 24, // Size of the dropdown arrow
+                                        iconSize:
+                                        24, // Size of the dropdown arrow
                                         iconEnabledColor: Colors
                                             .white, // Color of the dropdown arrow
                                         dropdownColor: const Color(
@@ -427,7 +436,9 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                   child: Container(
                                       width: width * 0.3,
                                       decoration: BoxDecoration(
-                                        color:  cashOut==true?Colors.green:const Color(0xffffc107),
+                                        color: cashOut == true
+                                            ? Colors.green
+                                            : const Color(0xffffc107),
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
                                             width: 1, color: Colors.black),
@@ -462,7 +473,7 @@ class _MinesHomePageState extends State<MinesHomePage> {
                               ],
                             ),
                           ),
-                          if(cashOut==true)
+                          if (cashOut == true)
                             Container(
                               height: height * 0.04,
                               width: width,
@@ -476,67 +487,71 @@ class _MinesHomePageState extends State<MinesHomePage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: LinearProgressIndicator(
-                          value: progressValue, // Progress based on the count value
+                          value:
+                          progressValue, // Progress based on the count value
                           backgroundColor: const Color(0xff013599),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+                          valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.green),
                         ),
                       ),
                       SizedBox(
                         height: height * 0.007,
                       ),
                       SizedBox(
-                          height: height * 0.55,
-                          child:   Stack(
-                            children: [
-                              GridView.builder(
-                                shrinkWrap: true,
-                                itemCount: rows * columns,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: columns,
-                                ),
-                                itemBuilder: (context, index) {
-                                  final row = index ~/ columns;
-                                  final col = index % columns;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      if (!gameLost) {
-                                        setState(() {
-                                          isTapped = true;
-                                          _toggleTappedCell(index);
-                                           selectedLength = selectedCells.where((cell) => cell).length;
-                                           amountVale = selectedIndex + (selectedLength * double.parse(displayedValue));
-                                          print("Selected length: $selectedLength");
-                                          print("Amount: $amountVale");
-
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        image:  DecorationImage(image: AssetImage(
-                                            selectedCells[index]
-                                               ? Assets.iconsVault
-                                                : isTapped && grid[row][col] && gameLost
-                                                ?Assets.mineMine
-                                                :Assets.mineMineGrid
-                                        ),fit: BoxFit.fill),
-
-                                      ),
-
-                                    ),
-                                  );
-                                },
+                        height: height * 0.55,
+                        child: Stack(
+                          children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: rows * columns,
+                              gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: columns,
                               ),
-                              if(cashOut==false)
+                              itemBuilder: (context, index) {
+                                final row = index ~/ columns;
+                                final col = index % columns;
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (!gameLost) {
+                                      setState(() {
+                                        isTapped = true;
+                                        _toggleTappedCell(index);
+                                        selectedLength = selectedCells
+                                            .where((cell) => cell)
+                                            .length;
+                                        amountVale = selectedIndex +
+                                            (selectedLength *
+                                                double.parse(displayedValue));
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      image: DecorationImage(
+                                          image: AssetImage(selectedCells[index]
+                                              ? Assets.iconsVault
+                                              : isTapped &&
+                                              grid[row][col] &&
+                                              gameLost
+                                              ? Assets.mineMine
+                                              : Assets.mineMineGrid),
+                                          fit: BoxFit.fill),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            if (cashOut == false)
                               Container(
                                 height: height * 0.55,
                                 width: width,
                                 color: Colors.transparent,
                               )
-                            ],
-                          ),
-                )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -568,11 +583,14 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                   // Colors.greenAccent,
                                   borderRadius: BorderRadius.circular(35)),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                     children: [
                                       const Text(
                                         '                 Bet',
@@ -583,7 +601,7 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Container(
                                               height: height * 0.04,
@@ -593,8 +611,8 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                               decoration: BoxDecoration(
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color:
-                                                        Colors.grey.withOpacity(0.3),
+                                                    color: Colors.grey
+                                                        .withOpacity(0.3),
                                                     blurRadius: 5,
                                                     spreadRadius: 2,
                                                     offset: const Offset(0, 3),
@@ -602,9 +620,10 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                                 ],
                                                 color: const Color(0xFF015759),
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                BorderRadius.circular(20),
                                                 border: Border.all(
-                                                    width: 1, color: Colors.black),
+                                                    width: 1,
+                                                    color: Colors.black),
                                               ),
                                               child: Text(
                                                 '$selectedIndex ₹',
@@ -629,15 +648,18 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                             color: Colors.teal,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
                                                 offset: const Offset(0,
                                                     3), // Adjust the shadow's position here
                                               ),
                                             ],
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: Colors.black)),
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                            border: Border.all(
+                                                color: Colors.black)),
                                         child: const Icon(
                                           Icons.remove,
                                           size: 20,
@@ -659,15 +681,18 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                             color: Colors.teal,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
                                                 offset: const Offset(0,
                                                     3), // Adjust the shadow's position here
                                               ),
                                             ],
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: Colors.black)),
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                            border: Border.all(
+                                                color: Colors.black)),
                                         child: Image.asset(
                                           Assets.iconsStack,
                                           height: 20,
@@ -686,47 +711,50 @@ class _MinesHomePageState extends State<MinesHomePage> {
                                             color: Colors.teal,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
                                                 offset: const Offset(0,
                                                     3), // Adjust the shadow's position here
                                               ),
                                             ],
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: Colors.black)),
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                            border: Border.all(
+                                                color: Colors.black)),
                                         child: const Text(
                                           '+',
                                           style: TextStyle(
-                                              fontSize: 20, color: Colors.white),
+                                              fontSize: 20,
+                                              color: Colors.white),
                                         )),
                                   ),
                                 ],
                               ),
                             ),
-                            if(cashOut==true)
-                            Container(
-                              width: width * 0.8,
-                              height: height * 0.08,
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  // Colors.greenAccent,
-                                  borderRadius: BorderRadius.circular(35)),
-
-                            ),
+                            if (cashOut == true)
+                              Container(
+                                width: width * 0.8,
+                                height: height * 0.08,
+                                decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    // Colors.greenAccent,
+                                    borderRadius: BorderRadius.circular(35)),
+                              ),
                           ],
                         ),
                       ),
                       SizedBox(
                         height: height * 0.02,
                       ),
-                      cashOut==false?
-                      InkWell(
-                        onTap:(){
+                      cashOut == false
+                          ? InkWell(
+                        onTap: () {
                           setState(() {
-                            cashOut=true;
+                            cashOut = true;
                           });
-                          _refreshGame();
+                          refreshGame();
 
                           mineBets(selectedIndex.toString());
                         },
@@ -738,9 +766,11 @@ class _MinesHomePageState extends State<MinesHomePage> {
                               // Colors.greenAccent,
                               borderRadius: BorderRadius.circular(35)),
                           child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 30.0),
+                            padding:
+                            EdgeInsets.symmetric(horizontal: 30.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                               children: [
                                 Icon(
                                   Icons.play_arrow_outlined,
@@ -758,26 +788,27 @@ class _MinesHomePageState extends State<MinesHomePage> {
                             ),
                           ),
                         ),
-                      ):
-                      InkWell(
-                        onTap:(){
+                      )
+                          : InkWell(
+                        onTap: () {
                           setState(() {
-                            cashOut=false;
+                            cashOut = false;
                           });
-                          mineCashOut(amountVale.toStringAsFixed(2),displayedValue,'1');
-
+                          mineCashOut(amountVale.toStringAsFixed(2),
+                              displayedValue, '1');
                         },
                         child: Container(
                           width: width * 0.8,
                           height: height * 0.07,
                           decoration: BoxDecoration(
                               gradient: AppColors.containerYellowGradient,
-                              // Colors.greenAccent,
                               borderRadius: BorderRadius.circular(35)),
-                          child:   Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                               children: [
                                 const Icon(
                                   Icons.pause,
@@ -850,11 +881,11 @@ class _MinesHomePageState extends State<MinesHomePage> {
                 child: GridView.builder(
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Number of columns
-                            crossAxisSpacing: 10, // Spacing between columns
-                            mainAxisSpacing: 15, // Spacing between rows
-                            childAspectRatio: 3.5),
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 15,
+                        childAspectRatio: 3.5),
                     itemCount: list.length,
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
@@ -888,7 +919,9 @@ class _MinesHomePageState extends State<MinesHomePage> {
   }
 
   UserViewProvider userProvider = UserViewProvider();
-  mineBets(String amount,) async {
+  mineBets(
+      String amount,
+      ) async {
     UserModel user = await userProvider.getUser();
     String token = user.id.toString();
     final response = await http.post(
@@ -896,35 +929,24 @@ class _MinesHomePageState extends State<MinesHomePage> {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        "userid":token,
-        "game_id":"12",
-        "amount":amount
-      }),
+      body: jsonEncode(
+          <String, String>{"userid": token, "game_id": widget.gameId, "amount": amount}),
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
-      print(responseData);
-      print("responseData");
       context.read<ProfileProvider>().fetchProfileData();
-      print( context.read<ProfileProvider>().mainWallet);
 
       Fluttertoast.showToast(msg: responseData['message']);
-
-      print( 'a rhaaaaa haiii'); 
     } else {
-      //setRegLoading(false);
       final Map<String, dynamic> responseData = jsonDecode(response.body);
 
       return Fluttertoast.showToast(msg: responseData['message']);
     }
   }
 
-  mineCashOut(String cashOut,String multiplier,String status) async {
+  mineCashOut(String cashOut, String multiplier, String status) async {
     UserModel user = await userProvider.getUser();
-    print(status);
-    print('qscsea');
     String token = user.id.toString();
     final response = await http.post(
       Uri.parse(ApiUrl.MineCashOut),
@@ -932,26 +954,22 @@ class _MinesHomePageState extends State<MinesHomePage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        "userid":token,
-        "win_amount":cashOut,
-        "multipler":multiplier,
-        "status":status
+        "userid": token,
+        "win_amount": cashOut,
+        "multipler": multiplier,
+        "status": status
       }),
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
-      print(responseData);
-      print("responseData");
 
       context.read<ProfileProvider>().fetchProfileData();
-      print( context.read<ProfileProvider>().mainWallet);
       Fluttertoast.showToast(msg: responseData['message']);
-      if(status=='1')
-      _refreshGame();
-
+      if (status == '1') {
+        refreshGame();
+      }
     } else {
-      //setRegLoading(false);
       final Map<String, dynamic> responseData = jsonDecode(response.body);
 
       return Fluttertoast.showToast(msg: responseData['message']);

@@ -61,7 +61,7 @@ class _CategoryElementState extends State<CategoryElement> {
       MiniGameModel(
           image: Assets.mineMines,
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> const MinesHomePage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> const MinesHomePage(gameId: '12',)));
           }),
       MiniGameModel(
           image: Assets.categoryPlinko,
