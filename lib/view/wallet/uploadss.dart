@@ -83,11 +83,11 @@ class _UploadScreenshotsState extends State<UploadScreenshots> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     Text(usdtcode==null?"":usdtcode.toString(), style: const TextStyle(
+                     Text(usdtcode=="null"?"":usdtcode.toString(), style: const TextStyle(
                         fontSize: 12, color: Colors.white
                     ),),
                     IconButton(onPressed: (){
-                      copyToClipboard(usdtcode==null?"":usdtcode.toString(), context);
+                      copyToClipboard(usdtcode=="null"?"":usdtcode.toString(), context);
                     }, icon: const Icon(Icons.copy,color: Colors.white,size: 15,))
                   ],
                 ),
@@ -211,7 +211,6 @@ class _UploadScreenshotsState extends State<UploadScreenshots> {
       print(token);
     }
     final response = await http.post(Uri.parse(ApiUrl.usdtdeposit),
-        // headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode({
           "userid": token,
           "actual_amount": usdtamount,
@@ -248,13 +247,12 @@ class _UploadScreenshotsState extends State<UploadScreenshots> {
   }
 
   getImage()async{
-    var res= await  http.get(Uri.parse("https://nerar.live/admin/index.php/Mahajongapi/usdt_slider"));
+    var res= await  http.get(Uri.parse("https://winzy.live/admin/index.php/Mahajongapi/usdt_slider"));
     var data = jsonDecode(res.body)["data"][0];
     setState(() {
-      imagePath="https://admin.nerar.live/${data["image"]}";
+      imagePath="https://admin.winzy.live/${data["image"]}";
       usdtcode="${data["usdtcode"]}";
     });
-    print(imagePath);
   }
 }
 

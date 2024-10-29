@@ -281,12 +281,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                                                               items[index]
                                                                   .id
                                                                   .toString();
-                                                          if (kDebugMode) {
-                                                            print(
-                                                                selectedIndex);
-                                                            print(currentId);
-                                                            print("zxcfvgbhn");
-                                                          }
                                                         });
                                                       },
                                                       child: Container(
@@ -714,14 +708,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   ) async {
     UserModel user = await userProvider.getUser();
     String token = user.id.toString();
-    print(token);
-    print({
-      "user_id": token,
-      "account_id": withdrawacid,
-      "type": payUsing.toString(),
-      "amount": money,
-    });
-    print("token withdraw");
 
     final response = await http.post(
       Uri.parse(
@@ -740,7 +726,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
 
     var data = jsonDecode(response.body);
     if (data["status"] == 200) {
-      // context.read<ProfileProvider>().fetchProfileData();
       Navigator.pop(context);
       return Utils.flushBarSuccessMessage(data['message'], context, Colors.black);
     } else if (data["status"] == "401") {
@@ -793,24 +778,15 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   List<GetwayModel> depositType = [];
 
   Future<void> depositTypeSelect() async {
-    final response = await http.get(
-      // Uri.parse('${ApiUrl.getwayList}type=2'),
-      Uri.parse('${ApiUrl.getwayList}'),
+    final response = await http.get(Uri.parse(ApiUrl.getwayList),
     );
-    if (kDebugMode) {
-      print('${ApiUrl.getwayList}');
-      print(ApiUrl.getwayList);
-      print('ApiUrl.getwayList');
-    }
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body)['data'];
       setState(() {
         minimumamount = json.decode(response.body)['minimum'];
 
-        depositType =
-            responseData.map((item) => GetwayModel.fromJson(item)).toList();
-        // selectedIndex = items.isNotEmpty ? 0:-1; //
+        depositType = responseData.map((item) => GetwayModel.fromJson(item)).toList();
       });
     } else if (response.statusCode == 400) {
       if (kDebugMode) {

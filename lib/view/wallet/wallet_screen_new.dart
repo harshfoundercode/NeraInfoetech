@@ -93,14 +93,9 @@ class _WalletScreenNewState extends State<WalletScreenNew> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            percentage((userData.mainWallet/(userData.totalWallet*0.01)).toStringAsFixed(2),
+                                userData.mainWallet==null?0: userData.mainWallet.toStringAsFixed(2), 'Main wallet'),
                             percentage(
-                              //main wallet/totalbalance*0.01
-                                (userData.mainWallet/(userData.totalWallet*0.01)).toStringAsFixed(2),
-
-                           userData.mainWallet==null?0: userData.mainWallet.toStringAsFixed(2),
-                                'Main wallet'),
-                            percentage(
-                              //thirdpartywallet/totalbalance*0.01
                                 (userData.thirdPartyWallet/(userData.totalWallet*0.01)).toStringAsFixed(2),
                                 userData.thirdPartyWallet==null?0: userData.thirdPartyWallet.toStringAsFixed(2),
                                 '3rd party wallet'),
@@ -112,7 +107,7 @@ class _WalletScreenNewState extends State<WalletScreenNew> {
                             title: 'Main wallet transfer',
                             fontSize: 17,
                             onTap: () {
-                              mainWalletTransfer();
+                              mainWalletTransfer(context);
                             },
                             hideBorder: true,
                             gradient: AppColors.loginSecondryGrad),
@@ -156,9 +151,8 @@ class _WalletScreenNewState extends State<WalletScreenNew> {
   BaseApiHelper baseApiHelper = BaseApiHelper();
 
   UserViewProvider userProvider = UserViewProvider();
-  mainWalletTransfer() async {
+  mainWalletTransfer(context) async {
 
-    print("fyusfxief");
     UserModel user = await userProvider.getUser();
     String token = user.id.toString();
     final response = await http.post(
@@ -171,8 +165,7 @@ class _WalletScreenNewState extends State<WalletScreenNew> {
       }),
     );
     var data = jsonDecode(response.body);
-    print(data);
-    print("data");
+
     if (data["status"] == 200) {
       context.read<ProfileProvider>().fetchProfileData();
       return Utils.flushBarSuccessMessage(data['message'], context, Colors.black);

@@ -16,7 +16,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QR Code'),
+        title: const Text('QR Code'),
       ),
       body: Stack(
         children: <Widget>[
@@ -37,7 +37,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
             },
           ),
           _isLoading
-              ? Center(
+              ? const Center(
             child: CircularProgressIndicator(),
           )
               : Container(),

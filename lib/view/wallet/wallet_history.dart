@@ -104,7 +104,6 @@ class _WalletHistoryState extends State<WalletHistory> with SingleTickerProvider
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.secondaryTextColor),
                                     textWidget(
-                                        // text: historyItem[index].type=="1"?"Winning":historyItem[index].type=="2"?"Bonus":"Commission",
                                         text: historyItem[index].type.toString(),
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -168,7 +167,6 @@ class _WalletHistoryState extends State<WalletHistory> with SingleTickerProvider
       setState(() {
 
         historyItem = responseData.map((item) => WalletHistoryModal.fromJson(item)).toList();
-        // selectedIndex = items.isNotEmpty ? 0:-1; //
       });
 
     }

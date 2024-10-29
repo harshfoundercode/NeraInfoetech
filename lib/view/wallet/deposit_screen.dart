@@ -292,7 +292,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                 ],
                               ),
                               SizedBox(height: height*0.01,),
-                              Container(
+                              SizedBox(
                                 width: width,
                                 height: height*0.123,
                                 child: GridView.builder(
@@ -478,7 +478,7 @@ class _DepositScreenState extends State<DepositScreen> {
                           ? AppBtn(
                               onTap: () {
                                 // IndianPay(depositCon.text, context);
-                                IndianPay(depositCon.text, context);
+                                indianPay(depositCon.text, context);
                               },
                               hideBorder: true,
                               title: 'Web Pay Deposit',
@@ -599,7 +599,6 @@ class _DepositScreenState extends State<DepositScreen> {
   List<GetwayModel> items = [];
 
   Future<void> getwaySelect() async {
-    UserModel user = await userProvider.getUser();
 
 
     final response = await http.get(
@@ -690,7 +689,7 @@ class _DepositScreenState extends State<DepositScreen> {
   //   }
   // }
 
-  IndianPay(String depositCon, context) async {
+  indianPay(String depositCon, context) async {
     setState(() {
       loading = true;
     });
@@ -726,7 +725,7 @@ class _DepositScreenState extends State<DepositScreen> {
         print('ssssss');
       }
       if (kIsWeb) {
-        _launchURL(url);
+        _launchURL(context,url);
       } else {
      //   _launchURL(url);
         Navigator.push(
@@ -752,7 +751,7 @@ class _DepositScreenState extends State<DepositScreen> {
   }
 
 
-  _launchURL(String urlget) async {
+  _launchURL(context,String urlget) async {
     var url = urlget;
     if (await canLaunch(url)) {
 

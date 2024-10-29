@@ -244,7 +244,6 @@ class _FirstDepositBonusListState extends State<FirstDepositBonusList> {
         depositItems = responseData
             .map((item) => ExtraDepositModel.fromJson(item))
             .toList();
-        // selectedIndex = items.isNotEmpty ? 0:-1; //
       });
     } else if (response.statusCode == 400) {
       if (kDebugMode) {

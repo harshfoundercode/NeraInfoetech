@@ -547,7 +547,6 @@ class _WithdrawHistoryState extends State<WithdrawHistory> with SingleTickerProv
   List<GetwayModel> items = [];
 
   Future<void> getwaySelect() async {
-    UserModel user = await userProvider.getUser();
     final response = await http.get(
       Uri.parse(ApiUrl.getwayList),
     );
