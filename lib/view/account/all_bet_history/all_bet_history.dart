@@ -9,6 +9,7 @@ import 'package:nera/view/account/all_bet_history/dragon_tiger_all_history.dart'
 import 'package:nera/view/account/all_bet_history/plinko_history.dart';
 import 'package:nera/view/account/all_bet_history/trx_all_history.dart';
 import 'package:nera/view/account/all_bet_history/wingoallhistory.dart';
+import 'package:nera/view/home/Mines/bet_history.dart';
 
 class AllBetHistory extends StatefulWidget {
   const AllBetHistory({super.key});
@@ -92,30 +93,22 @@ class _AllBetHistoryState extends State<AllBetHistory> {
                   text: 'Avaitor',
                   imagePath: Assets.aviatorFanAviator,
                 ),
-                // selectableContainer(
-                //   isSelected: selectedIndex == 4,
-                //   onTap: () {
-                //     selectIndex(4);
-                //   },
-                //   text: 'Plinko',
-                //   imagePath: Assets.iconsPlonkoicon,
-                // ),
-                // selectableContainer(
-                //   isSelected: selectedIndex == 5,
-                //   onTap: () {
-                //     selectIndex(5);
-                //   },
-                //   text: 'Andar Bahar',
-                //   imagePath: Assets.categoryAndharBahar,
-                // ),
-                // selectableContainer(
-                //   isSelected: selectedIndex == 6,
-                //   onTap: () {
-                //     selectIndex(6);
-                //   },
-                //   text: 'Head Tail',
-                //   imagePath: Assets.categoryHeadsTails,
-                // ),
+                selectableContainer(
+                  isSelected: selectedIndex == 4,
+                  onTap: () {
+                    selectIndex(4);
+                  },
+                  text: 'Plinko',
+                  imagePath: Assets.iconsPlonkoicon,
+                ),
+                selectableContainer(
+                  isSelected: selectedIndex == 5,
+                  onTap: () {
+                    selectIndex(5);
+                  },
+                  text: 'Mines',
+                  imagePath: Assets.mineMines,
+                ),
               ],
             ),
           ),
@@ -130,7 +123,10 @@ class _AllBetHistoryState extends State<AllBetHistory> {
               ? const AvaitorAllHistory(gameid: '5',):
           selectedIndex == 4
               ? const PlinkobetHistoryPage(gameid: '11'):
-                  Container()
+          selectedIndex == 5?
+          MineGameHistory():
+          selectedIndex == 6?
+              Container():Container()
         ],
       ),
     );

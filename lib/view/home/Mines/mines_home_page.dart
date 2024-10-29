@@ -161,6 +161,7 @@ class _MinesHomePageState extends State<MinesHomePage> {
         amountVale = 0.0;
 
         mineCashOut(amountVale.toStringAsFixed(2), displayedValue, '2');
+        context.read<ProfileProvider>().fetchProfileData();
         showDialog(
             barrierDismissible: false,
             context: context,
@@ -793,9 +794,10 @@ class _MinesHomePageState extends State<MinesHomePage> {
                         onTap: () {
                           setState(() {
                             cashOut = false;
+                            context.read<ProfileProvider>().fetchProfileData();
                           });
-                          mineCashOut(amountVale.toStringAsFixed(2),
-                              displayedValue, '1');
+                          mineCashOut(amountVale.toStringAsFixed(2), displayedValue, '1');
+
                         },
                         child: Container(
                           width: width * 0.8,
@@ -932,15 +934,13 @@ class _MinesHomePageState extends State<MinesHomePage> {
       body: jsonEncode(
           <String, String>{"userid": token, "game_id": widget.gameId, "amount": amount}),
     );
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      context.read<ProfileProvider>().fetchProfileData();
 
+      context.read<ProfileProvider>().fetchProfileData();
       Fluttertoast.showToast(msg: responseData['message']);
     } else {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-
       return Fluttertoast.showToast(msg: responseData['message']);
     }
   }
@@ -960,18 +960,17 @@ class _MinesHomePageState extends State<MinesHomePage> {
         "status": status
       }),
     );
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      context.read<ProfileProvider>().fetchProfileData();
       Fluttertoast.showToast(msg: responseData['message']);
+      context.read<ProfileProvider>().fetchProfileData();
+      print("hua kuch ");
       if (status == '1') {
         refreshGame();
       }
     } else {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-
       return Fluttertoast.showToast(msg: responseData['message']);
     }
   }
