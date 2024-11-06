@@ -31,7 +31,7 @@
         </intent>
     </queries>
    <application
-        android:label="Nera"
+        android:label="Nera infoetech"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
