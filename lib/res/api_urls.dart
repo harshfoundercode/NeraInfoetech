@@ -2,7 +2,8 @@
 
 class ApiUrl {
   static const String uploadimage = "${baseUrl}admin/uploads/";
-  static const String baseUrl = 'https://root.winzy.app/';
+  // static const String baseUrl = 'https://root.winzy.app/';
+  static const String baseUrl = 'https://nera.foundercode.org/';
   static const String configModel = "${baseUrl}api/";
 
   static const String login = "${configModel}login";
@@ -89,26 +90,17 @@ class ApiUrl {
 
   static const String usdtdeposit = "https://winzy.live/admin/api/pending_payment.php";
 
+  ///plinko
   static const String plinkoBet = "${configModel}plinko_bet";
   static const String plinkoList = "${configModel}plinko_index_list?type=";
   static const String plinkoMultiplier = "${configModel}plinko_multiplier";
   static const String plinkoBetHistory = "${configModel}plinko_result?";
 
-///andarbahar
 
-  static const String gameHistory = '${baseUrl}api/bet_history?game_id=';
-  static const String result = '${baseUrl}api/results?game_id=';
-  static const String betPlaced = '${baseUrl}api/bet';
-  static const String winAmount = '${baseUrl}api/win_amount?userid=';
-
-  ///head tails
-
-  static const String gameRules = '${baseUrl}api/rules?game_id=';
-
-  /// Mines
-  static const String MineBetHistory = "https://root.winzy.app/api/mine_result?";
-  static const String MineBet = "https://root.winzy.app/api/mine_bet";
-  static const String MineCashOut = "https://root.winzy.app/api/mine_cashout";
+  ///mine
+  static const String MineBetHistory = "${configModel}mine_result?";
+  static const String MineBet = "${configModel}mine_bet";
+  static const String MineCashOut = "${configModel}mine_cashout";
 }
 
 

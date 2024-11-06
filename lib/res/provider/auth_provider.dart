@@ -60,10 +60,8 @@ class UserAuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  userRegister(context, String identity, String password,
-      String referralCode, String email) async {
+  userRegister(context, String identity, String password, String referralCode, String email) async {
     final response = await http.post(
-      // Uri.parse("https://root.nera.com/api/register"),
       Uri.parse(ApiUrl.register),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

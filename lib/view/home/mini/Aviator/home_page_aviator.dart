@@ -82,7 +82,6 @@ class _GameAviatorState extends State<GameAviator>
 
   late AnimationController _controllerFlew;
   late Animation<Offset> _animationFlew;
-  // String betData1={"period":"1000000","bet":"10"};
   Map<String, dynamic> betData1 = {"period": "", "bet": ''};
   Map<String, dynamic> betData2 = {"period": "", "bet": ''};
 
