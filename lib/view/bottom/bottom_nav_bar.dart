@@ -73,7 +73,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           color: AppColors.secondaryTextColor,
           selectedColor:AppColors.gradientFirstColor,
           onTabSelected: _selectedTab,
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.bottomNavColor,
           items: [
             FabBottomNavBarItem(
                 imageData: _lastSelected == 0 ? Assets.imagesHomeYellow:Assets.imagesHomeGrey,

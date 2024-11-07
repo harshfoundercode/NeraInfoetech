@@ -3,7 +3,7 @@
 class ApiUrl {
   static const String uploadimage = "${baseUrl}admin/uploads/";
   // static const String baseUrl = 'https://root.winzy.app/';
-  static const String baseUrl = 'https://nera.foundercode.org/';
+  static const String baseUrl = 'https://teams.nerasoft.in/';
   static const String configModel = "${baseUrl}api/";
 
   static const String login = "${configModel}login";
@@ -12,7 +12,6 @@ class ApiUrl {
   static const String allTranscationType = "${configModel}transaction_history_list";
   static const String allTranscation = "${configModel}transaction_history?userid=";
   static const String depositWithdrawlStatusList = "${configModel}Status_list";
-
   static const String depositHistory = "${configModel}deposit_history?user_id=";
 
   static const String withdrawHistory = "${configModel}withdraw_history?user_id=";
